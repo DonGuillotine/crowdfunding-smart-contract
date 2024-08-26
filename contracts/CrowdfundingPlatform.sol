@@ -16,9 +16,9 @@ contract CrowdfundingPlatform is ReentrancyGuard {
         bool ended; 
     }
 
-    uint256 private campaignCounter; // Counter to keep track of the total number of campaigns
-    mapping(uint256 => Campaign) public campaigns; // Mapping to store campaigns using their ID
-    address public owner; // The owner of the contract
+    uint256 private campaignCounter; 
+    mapping(uint256 => Campaign) public campaigns; 
+    address public owner; 
 
     // Events to log important actions
     event CampaignCreated(uint256 campaignId, string title, address benefactor, uint256 goal, uint256 deadline);
@@ -84,18 +84,14 @@ contract CrowdfundingPlatform is ReentrancyGuard {
     }
 
     // Function to donate to a campaign
-    function donateToCampaign(uint256 _campaignId) public payable campaignActive(_campaignId) nonReentrant {
+    function donateToCampaign(uint256 _campaignId) public payable campaignActive(_campaignId) {
         require(msg.value > 0, "Donation amount must be greater than zero");
 
-        // Get the campaign from the mapping
         Campaign storage campaign = campaigns[_campaignId];
-        // Add the donation amount to the campaign's total raised funds
         campaign.amountRaised = campaign.amountRaised + msg.value;
 
-        // Emit an event to log the donation
         emit DonationReceived(_campaignId, msg.sender, msg.value);
 
-        // If the campaign has reached its goal, end the campaign
         if (campaign.amountRaised >= campaign.goal) {
             endCampaign(_campaignId);
         }
@@ -104,19 +100,16 @@ contract CrowdfundingPlatform is ReentrancyGuard {
     // Function to end a campaign and transfer funds to the benefactor
     function endCampaign(uint256 _campaignId) public nonReentrant {
         Campaign storage campaign = campaigns[_campaignId];
-        // Ensure the campaign can be ended either because it reached its deadline or goal
         require(block.timestamp >= campaign.deadline || campaign.amountRaised >= campaign.goal, "Campaign cannot be ended yet");
         require(!campaign.ended, "Campaign has already been ended");
 
-        campaign.ended = true; // Mark the campaign as ended
+        campaign.ended = true;
         bool goalReached = campaign.amountRaised >= campaign.goal;
 
-        // Transfer the raised funds to the benefactor if there are any funds
         if (campaign.amountRaised > 0) {
             campaign.benefactor.transfer(campaign.amountRaised);
         }
 
-        // Emit an event to log the campaign's end
         emit CampaignEnded(_campaignId, campaign.amountRaised, goalReached);
     }
 
@@ -132,7 +125,6 @@ contract CrowdfundingPlatform is ReentrancyGuard {
     ) {
         require(_campaignId > 0 && _campaignId <= campaignCounter, "Invalid campaign ID");
         Campaign storage campaign = campaigns[_campaignId];
-        // Return all the campaign's details
         return (
             campaign.title,
             campaign.description,
@@ -153,7 +145,7 @@ contract CrowdfundingPlatform is ReentrancyGuard {
                 activeCount++;
             }
         }
-        return activeCount; // Return the number of active campaigns
+        return activeCount; 
     }
 
     // Function for the contract owner to withdraw any leftover funds in the contract
