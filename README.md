@@ -13,6 +13,7 @@ This is a decentralized crowdfunding platform built using Solidity for the smart
   - [Create a Campaign](#create-a-campaign)
   - [Donate to a Campaign](#donate-to-a-campaign)
   - [End a Campaign](#end-a-campaign)
+- [Tests](#tests)
 - [Technologies Used](#technologies-used)
 - [Contributing](#contributing)
 - [License](#license)
@@ -111,6 +112,10 @@ Before you begin, ensure you have the following installed:
 
 1. If you're the campaign creator and the goal has been reached or the duration has ended, you can end the campaign.
 2. Click the "End Campaign" button to transfer the raised funds to the benefactor.
+
+### Tests
+
+![alt text](image.png)
 
 ## Technologies Used
 
